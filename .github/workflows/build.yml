@@ -25,9 +25,13 @@ jobs:
             CC=$TOOLCHAIN/armv7a-linux-androideabi21-clang \
             CXX=$TOOLCHAIN/armv7a-linux-androideabi21-clang++ \
             -j$(nproc)
+          find . -name "*.so" -o -name "*.dll" | head -20
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: genesis-plus-gx-android
-          path: genesis_plus_gx_libretro_android.so
+          path: |
+            genesis_plus_gx_libretro_android.so
+            genesis_plus_gx_libretro.so
+            genesis_plus_gx_libretro.dll

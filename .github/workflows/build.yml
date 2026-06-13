@@ -26,7 +26,7 @@ jobs:
           make -f Makefile.libretro \
             CC=$CC \
             CXX=$CXX \
-            TARGET_NAME=genesis_plus_gx_480x464_X7_SX4 \
+            TARGET_NAME=genesis_plus_gx_480x464 \
             -j$(nproc)
           mv genesis_plus_gx_libretro.dll genesis_plus_gx_libretro_android.so 2>/dev/null || true
           find . -maxdepth 1 -name "*.so" -o -name "*.dll"
@@ -35,4 +35,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: genesis-plus-gx-android
-          path: genesis_plus_gx_480x464_X7_SX4_libretro.so
+          path: genesis_plus_gx_480x464_libretro.so

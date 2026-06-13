@@ -21,17 +21,18 @@ jobs:
         run: |
           export NDK=$ANDROID_SDK_ROOT/ndk/25.2.9519653
           export TOOLCHAIN=$NDK/toolchains/llvm/prebuilt/linux-x86_64/bin
-          make -f Makefile.libretro platform=android_arm32 \
-            CC=$TOOLCHAIN/armv7a-linux-androideabi21-clang \
-            CXX=$TOOLCHAIN/armv7a-linux-androideabi21-clang++ \
+          export CC=$TOOLCHAIN/armv7a-linux-androideabi21-clang
+          export CXX=$TOOLCHAIN/armv7a-linux-androideabi21-clang++
+          make -f Makefile.libretro \
+            CC=$CC \
+            CXX=$CXX \
+            TARGET_NAME=genesis_plus_gx \
             -j$(nproc)
-          find . -name "*.so" -o -name "*.dll" | head -20
+          mv genesis_plus_gx_libretro.dll genesis_plus_gx_libretro_android.so 2>/dev/null || true
+          find . -maxdepth 1 -name "*.so" -o -name "*.dll"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: genesis-plus-gx-android
-          path: |
-            genesis_plus_gx_libretro_android.so
-            genesis_plus_gx_libretro.so
-            genesis_plus_gx_libretro.dll
+          path: genesis_plus_gx_libretro_android.so

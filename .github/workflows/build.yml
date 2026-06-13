@@ -24,13 +24,14 @@ jobs:
           export CC=$TOOLCHAIN/armv7a-linux-androideabi21-clang
           export CXX=$TOOLCHAIN/armv7a-linux-androideabi21-clang++
           sed -i 's/info->library_name = "Genesis Plus GX"/info->library_name = "Genesis Plus GX 480x464"/' libretro/libretro.c
+          grep -n "bitmap.viewport.w\|bitmap.viewport.h\|MAX_WIDTH\|MAX_HEIGHT\|vdp_pal" core/vdp_ctrl.c | head -30
+          grep -n "bitmap.viewport.w\|bitmap.viewport.h" libretro/libretro.c | head -20
           make -f Makefile.libretro \
             CC=$CC \
             CXX=$CXX \
             TARGET_NAME=genesis_plus_gx_480x464 \
             -j$(nproc)
-          mv genesis_plus_gx_libretro.dll genesis_plus_gx_libretro_android.so 2>/dev/null || true
-          find . -maxdepth 1 -name "*.so" -o -name "*.dll"
+          find . -maxdepth 1 -name "*.so"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4

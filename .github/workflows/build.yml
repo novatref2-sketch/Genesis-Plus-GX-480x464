@@ -1,0 +1,33 @@
+name: Build Genesis Plus GX Android
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Android NDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install NDK
+        run: echo "y" | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager "ndk;25.2.9519653"
+
+      - name: Build for Android ARMv7
+        run: |
+          export NDK=$ANDROID_SDK_ROOT/ndk/25.2.9519653
+          export TOOLCHAIN=$NDK/toolchains/llvm/prebuilt/linux-x86_64/bin
+          make -f Makefile.libretro platform=android_arm32 \
+            CC=$TOOLCHAIN/armv7a-linux-androideabi21-clang \
+            CXX=$TOOLCHAIN/armv7a-linux-androideabi21-clang++ \
+            -j$(nproc)
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: genesis-plus-gx-android
+          path: genesis_plus_gx_libretro_android.so

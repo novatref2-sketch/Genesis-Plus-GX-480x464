@@ -23,6 +23,7 @@ jobs:
           export TOOLCHAIN=$NDK/toolchains/llvm/prebuilt/linux-x86_64/bin
           export CC=$TOOLCHAIN/armv7a-linux-androideabi21-clang
           export CXX=$TOOLCHAIN/armv7a-linux-androideabi21-clang++
+          sed -i 's/info->library_name = "Genesis Plus GX"/info->library_name = "Genesis Plus GX 480x464"/' libretro/libretro.c
           make -f Makefile.libretro \
             CC=$CC \
             CXX=$CXX \

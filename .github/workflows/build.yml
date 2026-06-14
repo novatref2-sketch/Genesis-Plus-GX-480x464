@@ -17,19 +17,26 @@ jobs:
       - name: Install NDK
         run: echo "y" | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager "ndk;25.2.9519653"
 
+      - name: Patch sources
+        run: |
+          sed -i 's/info->library_name = "Genesis Plus GX"/info->library_name = "Genesis Plus GX 480x464"/' libretro/libretro.c
+          python3 << 'EOF'
+          import re
+          with open('core/vdp_ctrl.c', 'r') as f:
+              s = f.read()
+          s = re.sub(r'bitmap\.viewport\.w\s*=\s*\d+\s*;', 'bitmap.viewport.w = 480;', s)
+          s = re.sub(r'bitmap\.viewport\.h\s*=\s*\d+\s*;', 'bitmap.viewport.h = 464;', s)
+          with open('core/vdp_ctrl.c', 'w') as f:
+              f.write(s)
+          print('Patch applied')
+          EOF
+
       - name: Build for Android ARMv7
         run: |
           export NDK=$ANDROID_SDK_ROOT/ndk/25.2.9519653
           export TOOLCHAIN=$NDK/toolchains/llvm/prebuilt/linux-x86_64/bin
           export CC=$TOOLCHAIN/armv7a-linux-androideabi21-clang
           export CXX=$TOOLCHAIN/armv7a-linux-androideabi21-clang++
-          sed -i 's/info->library_name = "Genesis Plus GX"/info->library_name = "Genesis Plus GX 480x464"/' libretro/libretro.c
-          sed -i 's/bitmap\.viewport\.w = 256/bitmap.viewport.w = 480/g' core/vdp_ctrl.c
-          sed -i 's/bitmap\.viewport\.h = 192/bitmap.viewport.h = 464/g' core/vdp_ctrl.c
-          sed -i 's/bitmap\.viewport\.w = 320/bitmap.viewport.w = 480/g' core/vdp_ctrl.c
-          sed -i 's/bitmap\.viewport\.h = 224/bitmap.viewport.h = 464/g' core/vdp_ctrl.c
-          grep -n "bitmap.viewport.w\|bitmap.viewport.h\|MAX_WIDTH\|MAX_HEIGHT\|vdp_pal" core/vdp_ctrl.c | head -30
-          grep -n "bitmap.viewport.w\|bitmap.viewport.h" libretro/libretro.c | head -20
           make -f Makefile.libretro \
             CC=$CC \
             CXX=$CXX \

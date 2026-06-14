@@ -21,13 +21,13 @@ jobs:
         run: |
           sed -i 's/info->library_name = "Genesis Plus GX"/info->library_name = "Genesis Plus GX 480x464"/' libretro/libretro.c
           python3 << 'EOF'
-          import re
           with open('core/vdp_ctrl.c', 'r') as f:
               s = f.read()
-          s = re.sub(r'bitmap\.viewport\.w\s*=\s*\d+\s*;', 'bitmap.viewport.w = 480;', s)
-          s = re.sub(r'bitmap\.viewport\.h\s*=\s*\d+\s*;', 'bitmap.viewport.h = 464;', s)
-          s = re.sub(r'bitmap\.viewport\.ow\s*=\s*\d+\s*;', 'bitmap.viewport.ow = 480;', s)
-          s = re.sub(r'bitmap\.viewport\.oh\s*=\s*\d+\s*;', 'bitmap.viewport.oh = 464;', s)
+          # Patch only the initial reset values, not all assignments
+          s = s.replace('bitmap.viewport.w = 256;', 'bitmap.viewport.w = 480;')
+          s = s.replace('bitmap.viewport.h = 224;', 'bitmap.viewport.h = 464;')
+          s = s.replace('bitmap.viewport.ow = 256;', 'bitmap.viewport.ow = 480;')
+          s = s.replace('bitmap.viewport.oh = 224;', 'bitmap.viewport.oh = 464;')
           with open('core/vdp_ctrl.c', 'w') as f:
               f.write(s)
           print('Patch applied')

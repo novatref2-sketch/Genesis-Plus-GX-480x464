@@ -26,6 +26,8 @@ jobs:
               s = f.read()
           s = re.sub(r'bitmap\.viewport\.w\s*=\s*\d+\s*;', 'bitmap.viewport.w = 480;', s)
           s = re.sub(r'bitmap\.viewport\.h\s*=\s*\d+\s*;', 'bitmap.viewport.h = 464;', s)
+          s = re.sub(r'bitmap\.viewport\.ow\s*=\s*\d+\s*;', 'bitmap.viewport.ow = 480;', s)
+          s = re.sub(r'bitmap\.viewport\.oh\s*=\s*\d+\s*;', 'bitmap.viewport.oh = 464;', s)
           with open('core/vdp_ctrl.c', 'w') as f:
               f.write(s)
           print('Patch applied')
